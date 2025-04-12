@@ -30,6 +30,11 @@
 - Double-click a block to **enter its own workspace**
 - Organize complex systems with **infinite nesting**
 
+### 🌐 **Progressive Web App (PWA)**
+- Works **offline** after first visit — perfect for on-the-go productivity  
+- Install it like an app from your browser (desktop & mobile)
+
+  
 ### ✅ **Task Completion**
 - Mark tasks as completed with checkboxes
 
@@ -74,6 +79,7 @@
 3. 🔗 Use "Create Line" to connect them
 4. 🖱 Double-click a block to **open its nested space**
 5. 🏠 Use "Back" and "Home" to move around your task universe
+6. 🌐 **PWA Tip:** After opening once, it works offline too!
 
 ---
 
@@ -108,7 +114,8 @@ Nested spaces = next-level organization.
 ## 🧠 How Data is Stored
 
 🗂 All your data is **stored locally** in your browser’s `localStorage`.  
-🔒 No internet, no servers — it’s 100% private.
+🔒 No internet, no servers — it’s 100% private.  
+🌐 **Bonus:** PWA support means it works offline after first load.
 
 ---
 
