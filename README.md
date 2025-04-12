@@ -134,5 +134,11 @@ Nested spaces = next-level organization.
 ### ✅ Checked Out  
 ![Checked Out](d.png)
 
+### 🎨 Colors 
+![Checked Out](e.png)
+
+### 𐄂 Color Selection
+![Checked Out](f.png)
+
 ---
 
