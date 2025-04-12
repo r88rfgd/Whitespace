@@ -1,4 +1,515 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Tutorial and Template functionality
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const templateModal = document.getElementById('template-modal');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const templateCloseBtn = document.querySelector('.close-modal[data-modal="template"]');
+    const nextSlideBtn = document.getElementById('next-slide');
+    const prevSlideBtn = document.getElementById('prev-slide');
+    const slideDots = document.querySelectorAll('.slide-dot');
+    const tutorialSlides = document.querySelectorAll('.tutorial-slide');
+    const templateBtns = document.querySelectorAll('.template-btn');
+    const templateApplyBtns = document.querySelectorAll('.template-apply-btn');
+    const startBlankBtn = document.querySelector('.start-blank-btn');
+    
+    let currentSlide = 0;
+    
+    // Check if this is the first time the user is opening the app
+    function checkFirstTimeUser() {
+        const hasVisitedBefore = localStorage.getItem('whitespace_visited');
+        if (!hasVisitedBefore) {
+            // Show tutorial on first visit
+            tutorialModal.classList.add('active');
+            localStorage.setItem('whitespace_visited', 'true');
+        }
+    }
+    
+    // Initialize tutorial event listeners
+    function initTutorial() {
+        // Close tutorial modal when clicking the X button
+        closeModalBtn.addEventListener('click', () => {
+            tutorialModal.classList.remove('active');
+        });
+        
+        // Close template modal when clicking the X button
+        if (templateCloseBtn) {
+            templateCloseBtn.addEventListener('click', () => {
+                templateModal.classList.remove('active');
+            });
+        }
+        
+        // Template button to open template selection modal
+        const templateBtn = document.getElementById('template-btn');
+        if (templateBtn) {
+            templateBtn.addEventListener('click', () => {
+                templateModal.classList.add('active');
+            });
+        }
+        
+        // Help button to open tutorial
+        const helpBtn = document.getElementById('help-btn');
+        if (helpBtn) {
+            helpBtn.addEventListener('click', () => {
+                // Reset to first slide when opening
+                showSlide(0);
+                tutorialModal.classList.add('active');
+            });
+        }
+        
+        // Next slide button
+        nextSlideBtn.addEventListener('click', () => {
+            if (currentSlide < tutorialSlides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        });
+        
+        // Previous slide button
+        prevSlideBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        });
+        
+        // Slide dot navigation
+        slideDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const slideIndex = parseInt(dot.getAttribute('data-slide'));
+                showSlide(slideIndex);
+            });
+        });
+        
+        // Template buttons in tutorial
+        templateBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const templateType = btn.getAttribute('data-template');
+                applyTemplate(templateType);
+                tutorialModal.classList.remove('active');
+            });
+        });
+        
+        // Template apply buttons in template modal
+        templateApplyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const templateType = btn.getAttribute('data-template');
+                applyTemplate(templateType);
+                templateModal.classList.remove('active');
+            });
+        });
+        
+        // Start blank button
+        startBlankBtn.addEventListener('click', () => {
+            tutorialModal.classList.remove('active');
+            // Keep existing blank canvas
+        });
+    }
+    
+    // Show slide by index
+    function showSlide(index) {
+        // Remove active class from all slides
+        tutorialSlides.forEach(slide => slide.classList.remove('active'));
+        slideDots.forEach(dot => dot.classList.remove('active'));
+        
+        // Add active class to current slide
+        tutorialSlides[index].classList.add('active');
+        slideDots[index].classList.add('active');
+        
+        // Update current slide index
+        currentSlide = index;
+        
+        // Enable/disable prev/next buttons
+        prevSlideBtn.disabled = currentSlide === 0;
+        nextSlideBtn.disabled = currentSlide === tutorialSlides.length - 1;
+    }
+    
+    // Apply template based on selection
+    function applyTemplate(templateType) {
+        // Reset to main space first if not already there
+        if (currentSpace.id !== 'main') {
+            navigateToSpace({ id: 'main', name: 'Main Space', parentId: null }, false, true);
+            spaceHistory = []; // Clear history
+        }
+        
+        // Clear existing blocks and lines
+        blocks = [];
+        lines = [];
+        
+        // Clear existing spaces except main space
+        spaces = spaces.filter(space => space.id === 'main');
+        
+        // Remove all blocks and lines from the canvas
+        const blockElements = document.querySelectorAll('.block');
+        const lineElements = document.querySelectorAll('.connector');
+        
+        blockElements.forEach(el => el.remove());
+        lineElements.forEach(el => el.remove());
+        
+        // Apply selected template
+        switch (templateType) {
+            case 'study':
+                createStudyPlanTemplate();
+                break;
+            case 'project':
+                createProjectManagementTemplate();
+                break;
+            case 'brainstorm':
+                createBrainstormingTemplate();
+                break;
+        }
+        
+        // Save template to localStorage
+        saveToLocalStorage();
+    }
+    
+    // Study Plan Template
+    function createStudyPlanTemplate() {
+        // Clear canvas first to avoid congestion
+        blocks = [];
+        lines = [];
+        
+        // Calculate spacing based on canvas size
+        const blockWidth = 220; // Fixed block width
+        const horizontalSpacing = Math.max(300, canvas.clientWidth / 4); // Ensure minimum spacing
+        const verticalSpacing = 250; // Changed from 350 to 250 to move everything up
+        
+        // Create main topic block
+        const mainBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - blockWidth / 2, 
+            90, 
+            'My Study Plan', 
+            'Click to add notes about your overall study goals', 
+            '#bb86fc'
+        );
+        
+        // Adjust main block's DOM element for proper sizing
+        const mainBlockElement = document.getElementById(mainBlock.id);
+        if (mainBlockElement) {
+            mainBlockElement.style.width = `${blockWidth}px`;
+        }
+        
+        // Create subject blocks with improved spacing
+        const subject1 = createTemplateBlock(
+            canvas.clientWidth / 2 - horizontalSpacing, 
+            verticalSpacing, 
+            'Subject 1', 
+            '• Key topics to study\n• Resources\n• Assignment deadlines\n\n(Double-click to open nested space with detailed notes)', 
+            '#03dac6'
+        );
+        
+        // Adjust subject1's DOM element
+        const subject1Element = document.getElementById(subject1.id);
+        if (subject1Element) {
+            subject1Element.style.width = `${blockWidth}px`;
+        }
+        
+        const subject2 = createTemplateBlock(
+            canvas.clientWidth / 2 - blockWidth / 2, 
+            verticalSpacing, 
+            'Subject 2', 
+            '• Key topics to study\n• Resources\n• Assignment deadlines\n\n(Double-click to open nested space with detailed notes)', 
+            '#03dac6'
+        );
+        
+        // Adjust subject2's DOM element
+        const subject2Element = document.getElementById(subject2.id);
+        if (subject2Element) {
+            subject2Element.style.width = `${blockWidth}px`;
+        }
+        
+        const subject3 = createTemplateBlock(
+            canvas.clientWidth / 2 + horizontalSpacing - blockWidth, 
+            verticalSpacing, 
+            'Subject 3', 
+            '• Key topics to study\n• Resources\n• Assignment deadlines\n\n(Double-click to open nested space with detailed notes)', 
+            '#03dac6'
+        );
+        
+        // Adjust subject3's DOM element
+        const subject3Element = document.getElementById(subject3.id);
+        if (subject3Element) {
+            subject3Element.style.width = `${blockWidth}px`;
+        }
+        
+        // Create schedule block
+        const scheduleBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - blockWidth / 2, 
+            verticalSpacing * 2, // Adjusted multiplier to position it appropriately
+            'Study Schedule', 
+            '• Monday: Subject 1\n• Tuesday: Subject 2\n• Wednesday: Subject 3\n• Thursday: Review\n• Friday: Practice Tests', 
+            '#cf6679'
+        );
+        
+        // Adjust schedule block's DOM element
+        const scheduleElement = document.getElementById(scheduleBlock.id);
+        if (scheduleElement) {
+            scheduleElement.style.width = `${blockWidth}px`;
+        }
+        
+        // Connect blocks with lines
+        createLine(mainBlock.id, subject1.id);
+        createLine(mainBlock.id, subject2.id);
+        createLine(mainBlock.id, subject3.id);
+        createLine(subject1.id, scheduleBlock.id);
+        createLine(subject2.id, scheduleBlock.id);
+        createLine(subject3.id, scheduleBlock.id);
+        
+        // Create nested spaces for each subject
+        createNestedSpaceForBlock(subject1, 'Topic Notes', 'Readings', 'Assignments');
+        createNestedSpaceForBlock(subject2, 'Topic Notes', 'Readings', 'Assignments');
+        createNestedSpaceForBlock(subject3, 'Topic Notes', 'Readings', 'Assignments');
+    }
+    
+    // Project Management Template
+    function createProjectManagementTemplate() {
+        // Clear canvas first to avoid congestion
+        blocks = [];
+        lines = [];
+        
+        // Calculate spacing based on canvas size
+        const blockWidth = 220; // Fixed block width
+        const horizontalSpacing = Math.max(400, canvas.clientWidth / 3); // Increase minimum spacing
+        const verticalSpacing = 250; // Increased vertical spacing
+        
+        // Create project overview block
+        const projectBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - blockWidth / 2, 
+            20, // Changed from 80 to 40 to move it higher up
+            'Project Overview', 
+            'Project Title: \nObjective: \nDeadline: \nStakeholders: \n\n(Double-click to open nested space with project details)', 
+            '#bb86fc'
+        );
+        
+        // Adjust block's DOM element for proper sizing
+        const projectBlockElement = document.getElementById(projectBlock.id);
+        if (projectBlockElement) {
+            projectBlockElement.style.width = `${blockWidth}px`;
+        }
+        
+        // Create phase blocks with wider spacing - one clear problem visible in the screenshot
+        // Position blocks in a horizontal row with more space between them
+        const planningBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - horizontalSpacing, 
+            verticalSpacing, 
+            'Planning Phase', 
+            '• Define scope\n• Set timeline\n• Assign resources\n• Create budget\n\n(Double-click for detailed planning)', 
+            '#03dac6'
+        );
+        
+        // Adjust block's DOM element
+        const planningElement = document.getElementById(planningBlock.id);
+        if (planningElement) {
+            planningElement.style.width = `${blockWidth}px`;
+        }
+        
+        const executionBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - blockWidth / 2, 
+            verticalSpacing, 
+            'Execution Phase', 
+            '• Tasks\n• Status updates\n• Milestone tracking\n• Quality control\n\n(Double-click for execution details)', 
+            '#03dac6'
+        );
+        
+        // Adjust block's DOM element
+        const executionElement = document.getElementById(executionBlock.id);
+        if (executionElement) {
+            executionElement.style.width = `${blockWidth}px`;
+        }
+        
+        const deliveryBlock = createTemplateBlock(
+            canvas.clientWidth / 2 + horizontalSpacing - blockWidth, 
+            verticalSpacing, 
+            'Delivery Phase', 
+            '• Testing\n• Documentation\n• Handover\n• Client approval\n\n(Double-click for delivery checklist)', 
+            '#03dac6'
+        );
+        
+        // Adjust block's DOM element
+        const deliveryElement = document.getElementById(deliveryBlock.id);
+        if (deliveryElement) {
+            deliveryElement.style.width = `${blockWidth}px`;
+        }
+        
+        // Create team and risks blocks - position them with enough horizontal spacing
+        const teamBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - horizontalSpacing / 1.5, 
+            verticalSpacing * 2, 
+            'Team & Resources', 
+            '• Team member 1: Role\n• Team member 2: Role\n• Team member 3: Role\n• Required resources', 
+            '#cf6679'
+        );
+        
+        // Adjust block's DOM element
+        const teamElement = document.getElementById(teamBlock.id);
+        if (teamElement) {
+            teamElement.style.width = `${blockWidth}px`;
+        }
+        
+        const risksBlock = createTemplateBlock(
+            canvas.clientWidth / 2 + horizontalSpacing / 1.5 - blockWidth, 
+            verticalSpacing * 2, 
+            'Risks & Mitigations', 
+            '• Risk 1: Mitigation\n• Risk 2: Mitigation\n• Risk 3: Mitigation', 
+            '#cf6679'
+        );
+        
+        // Adjust block's DOM element
+        const risksElement = document.getElementById(risksBlock.id);
+        if (risksElement) {
+            risksElement.style.width = `${blockWidth}px`;
+        }
+        
+        // Connect blocks with lines
+        createLine(projectBlock.id, planningBlock.id);
+        createLine(projectBlock.id, executionBlock.id);
+        createLine(projectBlock.id, deliveryBlock.id);
+        createLine(planningBlock.id, executionBlock.id);
+        createLine(executionBlock.id, deliveryBlock.id);
+        createLine(planningBlock.id, teamBlock.id);
+        createLine(executionBlock.id, teamBlock.id);
+        createLine(executionBlock.id, risksBlock.id);
+        createLine(deliveryBlock.id, risksBlock.id);
+        
+        // Create nested spaces for each phase
+        createNestedSpaceForBlock(projectBlock, 'Project Charter', 'Key Deliverables', 'Budget Overview');
+        createNestedSpaceForBlock(planningBlock, 'Scope Definition', 'Timeline', 'Resource Allocation');
+        createNestedSpaceForBlock(executionBlock, 'Task List', 'Progress Tracking', 'Issue Log');
+        createNestedSpaceForBlock(deliveryBlock, 'Testing Plan', 'Handover Checklist', 'Client Sign-off');
+    }
+    
+    // Brainstorming Template
+    function createBrainstormingTemplate() {
+        // Clear canvas first to avoid congestion
+        blocks = [];
+        lines = [];
+        
+        // Calculate spacing and block dimensions
+        const blockWidth = 220; // Fixed block width
+        const radius = Math.min(canvas.clientWidth, canvas.clientHeight) * 0.35; // Radius scaled to canvas size
+        
+        // Create central idea block
+        const centralBlock = createTemplateBlock(
+            canvas.clientWidth / 2 - blockWidth / 2, 
+            canvas.clientHeight / 2 - 75, 
+            'Central Idea', 
+            'Your main concept or question\n\n(Double-click to add detailed notes)', 
+            '#bb86fc'
+        );
+        
+        // Adjust central block's DOM element for proper sizing
+        const centralElement = document.getElementById(centralBlock.id);
+        if (centralElement) {
+            centralElement.style.width = `${blockWidth}px`;
+        }
+        
+        // Create surrounding idea blocks in a circle pattern with more spacing
+        const numIdeas = 6;
+        const ideaBlocks = [];
+        
+        for (let i = 0; i < numIdeas; i++) {
+            // Calculate position in a circle with adjusted positioning
+            const angle = (i * (2 * Math.PI / numIdeas));
+            
+            // Offset to center of block rather than corner
+            const x = canvas.clientWidth / 2 + radius * Math.cos(angle) - blockWidth / 2;
+            const y = canvas.clientHeight / 2 + radius * Math.sin(angle) - 75;
+            
+            const ideaBlock = createTemplateBlock(
+                x, 
+                y, 
+                `Idea ${i+1}`, 
+                'Click to edit this idea\n\n(Double-click to explore this idea further)', 
+                i % 2 === 0 ? '#03dac6' : '#cf6679'
+            );
+            
+            // Adjust idea block's DOM element
+            const ideaElement = document.getElementById(ideaBlock.id);
+            if (ideaElement) {
+                ideaElement.style.width = `${blockWidth}px`;
+            }
+            
+            ideaBlocks.push(ideaBlock);
+            
+            // Connect to central idea
+            createLine(centralBlock.id, ideaBlock.id);
+        }
+        
+        // Create connections between adjacent ideas for a more interconnected brainstorm
+        // Only connect ideas that aren't too far apart to avoid crossing lines
+        for (let i = 0; i < numIdeas; i++) {
+            const nextIndex = (i + 1) % numIdeas;
+            createLine(ideaBlocks[i].id, ideaBlocks[nextIndex].id);
+        }
+        
+        // Create nested spaces for central idea and a few key ideas
+        createNestedSpaceForBlock(centralBlock, 'Overview', 'Key Questions', 'References');
+        createNestedSpaceForBlock(ideaBlocks[0], 'Details', 'Examples', 'Next Steps');
+        createNestedSpaceForBlock(ideaBlocks[2], 'Details', 'Examples', 'Next Steps');
+        createNestedSpaceForBlock(ideaBlocks[4], 'Details', 'Examples', 'Next Steps');
+    }
+    
+    // Helper function to create a block for templates
+    function createTemplateBlock(x, y, title, content, color) {
+        const id = 'block-' + Date.now() + Math.floor(Math.random() * 1000);
+        const block = {
+            id,
+            x: (x - canvasOffset.x) / scale,
+            y: (y - canvasOffset.y) / scale,
+            title,
+            content,
+            color,
+            completed: false,
+            spaceId: currentSpace.id
+        };
+        
+        blocks.push(block);
+        
+        // Render the block
+        const blockElement = renderBlock(block);
+        
+        return block;
+    }
+    
+    // Helper function to create nested spaces with content for a block
+    function createNestedSpaceForBlock(parentBlock, ...sectionTitles) {
+        // Create a new space for the block
+        const spaceId = 'space-' + Date.now() + Math.floor(Math.random() * 1000);
+        const spaceName = parentBlock.title + ' Space';
+        
+        // Add to spaces array
+        spaces.push({
+            id: spaceId,
+            name: spaceName,
+            parentId: currentSpace.id,
+            blockId: parentBlock.id
+        });
+        
+        // Calculate positions for each section
+        const centerX = 400;
+        let currentY = 150;
+        const verticalSpacing = 180;
+        
+        // Create blocks in the nested space for each section
+        sectionTitles.forEach((title, index) => {
+            // Create section block in the nested space
+            const sectionBlock = {
+                id: 'nested-block-' + Date.now() + Math.floor(Math.random() * 1000) + index,
+                x: centerX,
+                y: currentY,
+                title: title,
+                content: `Add your ${title.toLowerCase()} here...`,
+                color: index % 2 === 0 ? '#03dac6' : '#cf6679',
+                completed: false,
+                spaceId: spaceId
+            };
+            
+            blocks.push(sectionBlock);
+            currentY += verticalSpacing;
+        });
+    }
+    
+    // Initialize tutorial and check if first-time user
+    initTutorial();
+    checkFirstTimeUser();
+    
     // Add function to check if app is installed and running from cache
     function checkAppInstallStatus() {
         if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -384,6 +895,19 @@ document.addEventListener('DOMContentLoaded', () => {
         blockElement.style.transform = `scale(${scale})`;
         blockElement.style.transformOrigin = 'top left';
         
+        // Apply explicit width if specified in the block
+        if (block.width) {
+            blockElement.style.width = `${block.width}px`;
+        } else {
+            // Set a default width for consistent sizing
+            blockElement.style.width = '220px';
+        }
+        
+        // Apply minimum height if specified
+        if (block.height) {
+            blockElement.style.minHeight = `${block.height}px`;
+        }
+        
         if (block.completed) {
             blockElement.classList.add('completed');
         }
@@ -404,6 +928,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Setup block event listeners
         setupBlockEvents(blockElement);
+        
+        return blockElement;
     }
     
     function setMode(newMode) {
@@ -513,7 +1039,8 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'New Block',
             color: currentColor,
             completed: false,
-            spaceId: currentSpace.id
+            spaceId: currentSpace.id,
+            width: 220 // Default width for consistency
         };
         
         blocks.push(block);
@@ -527,6 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
         blockElement.style.borderColor = currentColor;
         blockElement.style.transform = `scale(${scale})`;
         blockElement.style.transformOrigin = 'top left';
+        blockElement.style.width = `${block.width}px`; // Set explicit width
         
         blockElement.innerHTML = `
             <div class="connection-point top"></div>
