@@ -4,6 +4,24 @@
 
 ---
 
+---
+
+<h2 align="center">🚀 Try it out now here!</h2>
+
+<p align="center">
+  🧠 Organize. 🎯 Plan. 💡 Create.<br><br>
+  👉 <a href="https://r88rfgd.github.io/Whitespace/" target="_blank"><strong>Click here to launch Whitespace now!</strong></a> 👈
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-LIVE-brightgreen?style=for-the-badge" alt="Live Status">
+  <img src="https://img.shields.io/badge/Built%20With-Vanilla%20JS-blueviolet?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Hosted%20On-GitHub%20Pages-orange?style=for-the-badge">
+</p>
+
+---
+
+
 ## ✨ Features
 
 ### 🧩 **Visual Task Management**
