@@ -1,3 +1,13 @@
+window.onload = () => {
+  'use strict';
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+             .register('./sw.js');
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
     const createBlockBtn = document.getElementById('create-block-btn');
