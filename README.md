@@ -129,6 +129,9 @@ Nested spaces = next-level organization.
 
 ## 🖼 Screenshots
 
+### 📌 Templates
+![Main Space](g.png)
+
 ### 🧩 Main Space  
 ![Main Space](c.png)
 
