@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whitespace - Flow Chart Todo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <div class="toolbar">
+            <button id="create-block-btn">Create Block</button>
+            <button id="create-line-btn">Create Line</button>
+            <button id="delete-btn">Delete</button>
+            <div id="navigation">
+                <button id="back-btn" class="nav-btn">← Back</button>
+                <span id="current-space">Main Space</span>
+                <button id="home-btn" class="nav-btn">Home</button>
+            </div>
+            <div class="spacer"></div>
+            <input type="color" id="color-picker" value="#ffffff">
+        </div>
+        <div id="canvas" class="canvas"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 

@@ -1,0 +1,346 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --error-color: #cf6679;
+    --text-color: #ffffff;
+    --text-secondary-color: #b0b0b0;
+    --border-color: #333333;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.toolbar button {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    margin-right: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toolbar button:hover {
+    background-color: #333333;
+}
+
+.toolbar button.active {
+    background-color: var(--primary-color);
+    color: #000000;
+}
+
+.toolbar button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#navigation {
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+    padding-left: 15px;
+    border-left: 1px solid var(--border-color);
+}
+
+#current-space {
+    margin: 0 10px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.nav-btn:hover {
+    background-color: rgba(187, 134, 252, 0.1);
+}
+
+.spacer {
+    flex: 1;
+}
+
+#space-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    background-image: 
+        linear-gradient(to right, rgba(51, 51, 51, 0.5) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(51, 51, 51, 0.5) 1px, transparent 1px);
+    background-size: 20px 20px;
+    cursor: grab;
+}
+
+.canvas:active {
+    cursor: grabbing;
+}
+
+.block {
+    position: absolute;
+    min-width: 150px;
+    min-height: 100px;
+    background-color: var(--surface-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.block-header {
+    padding: 8px;
+    background-color: rgba(187, 134, 252, 0.2);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    cursor: move;
+}
+
+.block-title {
+    flex: 1;
+    margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.block-title[contenteditable="true"]:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.block-content {
+    padding: 10px;
+    flex: 1;
+    overflow: auto;
+    color: var(--text-color);
+}
+
+.block-content[contenteditable="true"]:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox::after {
+    content: '';
+    display: block;
+    width: 0px;
+    height: 0px;
+    border-radius: 2px;
+    background-color: var(--primary-color);
+    transition: all 0.1s;
+}
+
+.checkbox:checked::after {
+    width: 10px;
+    height: 10px;
+}
+
+.expand-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 2px 5px;
+}
+
+.connector {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.connector path {
+    stroke: var(--secondary-color);
+    stroke-width: 2px;
+    fill: none;
+    pointer-events: stroke;
+}
+
+.connector-arrow {
+    fill: var(--secondary-color);
+}
+
+.connector-handle {
+    fill: var(--primary-color);
+    stroke: var(--bg-color);
+    stroke-width: 1px;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.nested-canvas {
+    flex: 1;
+    position: relative;
+    background-color: rgba(30, 30, 30, 0.7);
+    min-height: 150px;
+}
+
+#color-picker {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    height: 30px;
+}
+
+.completed .block-title {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.connection-point {
+    position: absolute;
+    top: -5px;
+    left: calc(50% - 5px);
+    width: 10px;
+    height: 10px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.block:hover .connection-point {
+    opacity: 1;
+}
+
+.whitespace-title {
+    color: var(--primary-color);
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+}
+
+.pasted-image {
+    max-width: 100%;
+    border-radius: 4px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.pasted-image:hover {
+    transform: scale(1.02);
+}
+
+.block-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 5px 0;
+    position: relative;
+    resize: both;
+    overflow: auto;
+}
+
+/* Make blocks with images potentially larger */
+.block-content:has(img) {
+    min-height: 100px;
+}
+
+/* Custom resize handles for improved UX */
+.image-resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-color);
+    border: 1px solid var(--text-color);
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.resize-handle-se {
+    bottom: -5px;
+    right: -5px;
+    cursor: nwse-resize;
+}
+
+.resize-handle-sw {
+    bottom: -5px;
+    left: -5px;
+    cursor: nesw-resize;
+}
+
+.resize-handle-ne {
+    top: -5px;
+    right: -5px;
+    cursor: nesw-resize;
+}
+
+.resize-handle-nw {
+    top: -5px;
+    left: -5px;
+    cursor: nwse-resize;
+}
+
+.resizing {
+    user-select: none;
+    border: 1px dashed var(--primary-color);
+} 
