@@ -4,8 +4,6 @@
 
 ---
 
----
-
 <h2 align="center">🚀 Try it out now here!</h2>
 
 <p align="center">
