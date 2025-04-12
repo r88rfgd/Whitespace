@@ -107,10 +107,10 @@ Nested spaces = next-level organization.
 ## 🖼 Screenshots
 
 ### 🧩 Main Space  
-![Main Space](a.png)
+![Main Space](c.png)
 
 ### 🔍 Zoomed Out  
-![Zoomed Out Main Space](c.png)
+![Zoomed Out Main Space](a.png)
 
 ### 🧱 Nested Workspace  
 ![Nested Workspace](b.png)
