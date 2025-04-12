@@ -1,14 +1,23 @@
-window.onload = () => {
-  'use strict';
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-             .register('/sw.js');
-  }
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
+    // Add function to check if app is installed and running from cache
+    function checkAppInstallStatus() {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('App is running in standalone mode (installed)');
+        }
+    }
+    checkAppInstallStatus();
+    
+    // PWA installation
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Store the event so it can be triggered later
+        deferredPrompt = e;
+        // Optionally, show your own install button or UI element
+        // For example, you could add a button to the toolbar
+    });
+    
     const canvas = document.getElementById('canvas');
     const createBlockBtn = document.getElementById('create-block-btn');
     const createLineBtn = document.getElementById('create-line-btn');
